@@ -17,6 +17,7 @@ import ecommerce.dto.PagamentoDTO;
 import ecommerce.entity.CarrinhoDeCompras;
 import ecommerce.entity.Cliente;
 import ecommerce.entity.ItemCompra;
+import ecommerce.entity.Produto;
 import ecommerce.entity.Regiao;
 import ecommerce.entity.TipoCliente;
 import ecommerce.entity.TipoProduto;
@@ -88,6 +89,9 @@ public class CompraService {
 			throw new IllegalStateException("Itens fora de estoque.");
 		}
 
+		validarCarrinhoParaCompra(carrinho);
+		validarClienteParaCompra(cliente);
+
 		BigDecimal custoTotal = calcularCustoTotal(carrinho, cliente.getRegiao(), cliente.getTipo());
 
 		PagamentoDTO pagamento = pagamentoExternal.autorizarPagamento(cliente.getId(), custoTotal.doubleValue());
@@ -106,6 +110,76 @@ public class CompraService {
 		CompraDTO compraDTO = new CompraDTO(true, pagamento.transacaoId(), "Compra finalizada com sucesso.");
 
 		return compraDTO;
+	}
+
+	private void validarClienteParaCompra(Cliente cliente) {
+
+		if (cliente == null) {
+			throw new IllegalArgumentException("Cliente inválido para a compra.");
+		}
+
+		if (cliente.getNome() == null) {
+			throw new IllegalArgumentException("Nome do cliente inválido para a compra.");
+		}
+
+		if (cliente.getRegiao() == null) {
+			throw new IllegalArgumentException("Região do cliente inválida para a compra.");
+		}
+
+		if (cliente.getTipo() == null) {
+			throw new IllegalArgumentException("Tipo do cliente inválido para a compra.");
+		}
+
+	}
+
+	private void validarCarrinhoParaCompra(CarrinhoDeCompras carrinho) {
+		if (carrinho == null || carrinho.getItens() == null || carrinho.getItens().isEmpty()) {
+			throw new IllegalArgumentException("Carrinho inválido para a compra.");
+		}
+
+		carrinho.getItens().forEach(item -> {
+			validarItemCompra(item);
+		});
+	}
+
+	private void validarItemCompra(ItemCompra item) {
+		if (item.getProduto() == null) {
+			throw new IllegalArgumentException("Item de compra com produto inválido.");
+		}
+
+		validarProduto(item.getProduto());
+
+		if (item.getQuantidade() == null || item.getQuantidade() <= 0) {
+			throw new IllegalArgumentException("Item de compra com quantidade inválida.");
+		}
+	}
+
+	private void validarProduto(Produto produto) {
+		if (islNullOrLessEqualZero(produto.getAltura()) ||
+				islNullOrLessEqualZero(produto.getLargura()) ||
+				islNullOrLessEqualZero(produto.getComprimento())) {
+			throw new IllegalArgumentException("Produto com dimensões inválido.");
+		}
+
+		if (islNullOrLessEqualZero(produto.getPesoFisico()))
+			throw new IllegalArgumentException("Produto com peso inválido.");
+
+		if (islNullOrLessEqualZero(produto.getPreco()))
+			throw new IllegalArgumentException("Produto com preço inválido.");
+
+		if (produto.getTipo() == null)
+			throw new IllegalArgumentException("Produto com tipo inválido.");
+
+		if (produto.getNome() == null || produto.getNome().isBlank())
+			throw new IllegalArgumentException("Produto com nome inválido.");
+
+		if (produto.getDescricao() == null || produto.getDescricao().isBlank())
+			throw new IllegalArgumentException("Produto com nome inválido.");
+
+	}
+
+	private boolean islNullOrLessEqualZero(BigDecimal value) {
+		return value == null || value.compareTo(BigDecimal.ZERO) <= 0;
 	}
 
 	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho, Regiao regiao, TipoCliente tipoCliente) {
