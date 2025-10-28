@@ -255,10 +255,15 @@ public class CompraService {
 		BigDecimal pesoTotal = calcularPesoTotalCompra(carrinho);
 		BigDecimal encargoPeso = calcularEncargoPeso(pesoTotal);
 		BigDecimal encargoFragilidade = calcularEncargoFragilidade(carrinho);
+		BigDecimal freteBase;
 
-		BigDecimal freteBase = pesoTotal.add(encargoPeso).add(encargoFragilidade);
+		if(pesoTotal.compareTo(CINCO) < 0){
+			freteBase = encargoFragilidade;
+		} else {
+			freteBase = pesoTotal.add(encargoPeso).add(encargoFragilidade);
 
-		freteBase = freteBase.multiply(obterMultiplicadorRegiao(regiao));
+			freteBase = freteBase.multiply(obterMultiplicadorRegiao(regiao));
+		}
 
 		return freteBase;
 	}
