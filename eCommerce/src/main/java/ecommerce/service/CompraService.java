@@ -279,10 +279,8 @@ public class CompraService {
 	}
 
 	private BigDecimal calcularEncargoPeso(BigDecimal peso) {
-		if (peso == null || peso.compareTo(BigDecimal.ZERO) <= 0)
-			return BigDecimal.ZERO;
 
-		if (peso.compareTo(CINCO) <= 0) {
+		if (peso == null || peso.compareTo(CINCO) <= 0) {
 			return BigDecimal.ZERO;
 		}
 
