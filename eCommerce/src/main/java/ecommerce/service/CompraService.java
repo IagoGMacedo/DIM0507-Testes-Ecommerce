@@ -131,11 +131,12 @@ public class CompraService {
 			throw new IllegalArgumentException(get("erro.item.produto.invalido"));
 		}
 
-		validarProduto(item.getProduto());
-
 		if (item.getQuantidade() == null || item.getQuantidade() <= 0) {
 			throw new IllegalArgumentException(get("erro.item.quantidade.invalida"));
 		}
+
+		validarProduto(item.getProduto());
+
 	}
 
 	private void validarProduto(Produto produto) {
@@ -257,7 +258,7 @@ public class CompraService {
 		BigDecimal encargoFragilidade = calcularEncargoFragilidade(carrinho);
 		BigDecimal freteBase;
 
-		if(pesoTotal.compareTo(CINCO) < 0){
+		if (pesoTotal.compareTo(CINCO) < 0) {
 			freteBase = encargoFragilidade;
 		} else {
 			freteBase = pesoTotal.add(encargoPeso).add(encargoFragilidade);
