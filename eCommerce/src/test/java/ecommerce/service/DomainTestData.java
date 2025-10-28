@@ -67,4 +67,18 @@ public final class DomainTestData {
         return p;
     }
 
+    public static Produto produtoBasico(BigDecimal preco) {
+        Produto p = new Produto();
+        p.setNome("Mouse");
+        p.setDescricao("Mouse óptico");
+        p.setTipo(TipoProduto.ELETRONICO);
+        p.setPreco(preco);
+        p.setPesoFisico(new BigDecimal("0.20"));
+        p.setAltura(new BigDecimal("10"));
+        p.setLargura(new BigDecimal("5"));
+        p.setComprimento(new BigDecimal("5"));
+        p.setFragil(false);
+        return p;
+    }
+
 }
