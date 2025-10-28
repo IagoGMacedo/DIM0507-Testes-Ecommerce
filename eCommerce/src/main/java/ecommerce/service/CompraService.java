@@ -23,6 +23,7 @@ import ecommerce.entity.TipoCliente;
 import ecommerce.entity.TipoProduto;
 import ecommerce.external.IEstoqueExternal;
 import ecommerce.external.IPagamentoExternal;
+import static ecommerce.utils.Msg.get;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -89,9 +90,6 @@ public class CompraService {
 			throw new IllegalStateException("Itens fora de estoque.");
 		}
 
-		validarCarrinhoParaCompra(carrinho);
-		validarClienteParaCompra(cliente);
-
 		BigDecimal custoTotal = calcularCustoTotal(carrinho, cliente.getRegiao(), cliente.getTipo());
 
 		PagamentoDTO pagamento = pagamentoExternal.autorizarPagamento(cliente.getId(), custoTotal.doubleValue());
@@ -112,29 +110,15 @@ public class CompraService {
 		return compraDTO;
 	}
 
-	private void validarClienteParaCompra(Cliente cliente) {
-
-		if (cliente == null) {
-			throw new IllegalArgumentException("Cliente inválido para a compra.");
+	private void validarTipoClienteParaCompra(TipoCliente tipoCliente) {
+		if (tipoCliente == null) {
+			throw new IllegalArgumentException(get("erro.tipoCliente.invalido"));
 		}
-
-		if (cliente.getNome() == null) {
-			throw new IllegalArgumentException("Nome do cliente inválido para a compra.");
-		}
-
-		if (cliente.getRegiao() == null) {
-			throw new IllegalArgumentException("Região do cliente inválida para a compra.");
-		}
-
-		if (cliente.getTipo() == null) {
-			throw new IllegalArgumentException("Tipo do cliente inválido para a compra.");
-		}
-
 	}
 
 	private void validarCarrinhoParaCompra(CarrinhoDeCompras carrinho) {
 		if (carrinho == null || carrinho.getItens() == null || carrinho.getItens().isEmpty()) {
-			throw new IllegalArgumentException("Carrinho inválido para a compra.");
+			throw new IllegalArgumentException(get("erro.carrinho.invalido"));
 		}
 
 		carrinho.getItens().forEach(item -> {
@@ -144,13 +128,13 @@ public class CompraService {
 
 	private void validarItemCompra(ItemCompra item) {
 		if (item.getProduto() == null) {
-			throw new IllegalArgumentException("Item de compra com produto inválido.");
+			throw new IllegalArgumentException(get("erro.item.produto.invalido"));
 		}
 
 		validarProduto(item.getProduto());
 
 		if (item.getQuantidade() == null || item.getQuantidade() <= 0) {
-			throw new IllegalArgumentException("Item de compra com quantidade inválida.");
+			throw new IllegalArgumentException(get("erro.item.quantidade.invalida"));
 		}
 	}
 
@@ -158,23 +142,18 @@ public class CompraService {
 		if (islNullOrLessEqualZero(produto.getAltura()) ||
 				islNullOrLessEqualZero(produto.getLargura()) ||
 				islNullOrLessEqualZero(produto.getComprimento())) {
-			throw new IllegalArgumentException("Produto com dimensões inválido.");
+			throw new IllegalArgumentException(get("erro.produto.dimensoes.invalidas"));
 		}
-
 		if (islNullOrLessEqualZero(produto.getPesoFisico()))
-			throw new IllegalArgumentException("Produto com peso inválido.");
-
+			throw new IllegalArgumentException(get("erro.produto.peso.invalido"));
 		if (islNullOrLessEqualZero(produto.getPreco()))
-			throw new IllegalArgumentException("Produto com preço inválido.");
-
+			throw new IllegalArgumentException(get("erro.produto.preco.invalido"));
 		if (produto.getTipo() == null)
-			throw new IllegalArgumentException("Produto com tipo inválido.");
-
+			throw new IllegalArgumentException(get("erro.produto.tipo.invalido"));
 		if (produto.getNome() == null || produto.getNome().isBlank())
-			throw new IllegalArgumentException("Produto com nome inválido.");
-
+			throw new IllegalArgumentException(get("erro.produto.nome.invalido"));
 		if (produto.getDescricao() == null || produto.getDescricao().isBlank())
-			throw new IllegalArgumentException("Produto com nome inválido.");
+			throw new IllegalArgumentException(get("erro.produto.descricao.invalida"));
 
 	}
 
@@ -183,10 +162,13 @@ public class CompraService {
 	}
 
 	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho, Regiao regiao, TipoCliente tipoCliente) {
+		validarCarrinhoParaCompra(carrinho);
+		validarTipoClienteParaCompra(tipoCliente);
+
 		var subtotal = calcularSubtotal(carrinho);
 		var frete = calcularFreteCompra(carrinho, regiao, tipoCliente);
 
-		return subtotal.add(frete);
+		return subtotal.add(frete).setScale(2, RoundingMode.HALF_UP);
 	}
 
 	// Subtotal com desconto
@@ -205,7 +187,7 @@ public class CompraService {
 		BigDecimal percentual = obterPercentualDescontoCarrinho(subtotal);
 		BigDecimal totalComDesconto = subtotal.subtract(subtotal.multiply(percentual));
 
-		return totalComDesconto.setScale(2, RoundingMode.HALF_UP);
+		return totalComDesconto;
 	}
 
 	private BigDecimal obterPercentualDescontoCarrinho(BigDecimal subtotal) {
@@ -234,7 +216,7 @@ public class CompraService {
 		BigDecimal percentual = obterPercentualDescontoPorQuantidade(totalItens);
 		BigDecimal desconto = subtotal.multiply(percentual);
 
-		return subtotal.subtract(desconto).setScale(2, RoundingMode.HALF_UP);
+		return subtotal.subtract(desconto);
 	}
 
 	private BigDecimal obterPercentualDescontoPorQuantidade(long totalItens) {
@@ -353,7 +335,7 @@ public class CompraService {
 		BigDecimal altura = item.getProduto().getAltura();
 
 		BigDecimal pesoCubicoUnit = comprimento.multiply(largura).multiply(altura)
-				.divide(FATOR_CUBICO);
+				.divide(FATOR_CUBICO, 10, RoundingMode.HALF_UP);
 
 		BigDecimal qtd = BigDecimal.valueOf(item.getQuantidade());
 
