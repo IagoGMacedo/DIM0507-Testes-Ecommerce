@@ -2,6 +2,7 @@ package ecommerce.service;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import ecommerce.entity.CarrinhoDeCompras;
@@ -32,6 +33,15 @@ public final class DomainTestData {
         CarrinhoDeCompras c = new CarrinhoDeCompras();
         c.setItens(List.of(item));
         return c;
+    }
+
+    public static void adicionarVariosItems(CarrinhoDeCompras c, Produto produto, int quantidade) {
+        ItemCompra item = new ItemCompra(0L, produto, 1L);
+        List<ItemCompra> itens = new ArrayList<>(c.getItens());
+        for (int i = 0; i < quantidade; i++) {
+            itens.add(item);
+        }
+        c.setItens(itens);
     }
 
     public static CarrinhoDeCompras carrinhoComItemProdutoNulo(long qtd) {
