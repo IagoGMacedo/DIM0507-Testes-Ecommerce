@@ -207,10 +207,6 @@ public class CompraService {
 						.multiply(BigDecimal.valueOf(i.getQuantidade())))
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		// long totalItens = itens.stream()
-		// .map(ItemCompra::getQuantidade)
-		// .mapToLong(Long::longValue)
-		// .sum();
 		long totalItens = itens.stream()
 				.count();
 
