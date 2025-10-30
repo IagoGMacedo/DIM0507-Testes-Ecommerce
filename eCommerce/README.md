@@ -1,7 +1,9 @@
 # Caixa Branca
 
 ### Cobertura obrigatória de arestas (branch coverage): 
-![alt text](image.png)
+<img width="1345" height="336" alt="image" src="https://github.com/user-attachments/assets/0a3ca2db-c0af-4864-a66b-507de16b1d2f" />
+
+
 Testes implementados em CompraServiceCoberturaArestasTest
 
 ### Cobertura MC/DC (Modified Condition/Decision Coverage):
