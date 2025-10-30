@@ -17,6 +17,12 @@ Para executar os testes de caixa preta
 
 # Caixa Branca
 
+### Cobertura obrigatória de arestas (branch coverage): 
+<img width="1345" height="336" alt="image" src="https://github.com/user-attachments/assets/0a3ca2db-c0af-4864-a66b-507de16b1d2f" />
+
+
+Testes implementados em CompraServiceCoberturaArestasTest
+
 ### Cobertura MC/DC (Modified Condition/Decision Coverage):
 
 |         Caso        | A (altura ≤ 0/nula) | L (largura ≤ 0/nula) | C (comprimento ≤ 0/nulo) | D = A∨L∨C | Entrada mínima (dimensões)          | Resultado esperado                                   |
@@ -25,6 +31,8 @@ Para executar os testes de caixa preta
 | **T2** (prova de A) |        **T**        |           F          |             F            |   **T**   | altura=0, largura=5, comprimento=5  | **Lança** `erro.produto.dimensoes.invalidas` |
 | **T3** (prova de L) |          F          |         **T**        |             F            |   **T**   | altura=10, largura=0, comprimento=5 | **Lança** `erro.produto.dimensoes.invalidas` |
 | **T4** (prova de C) |          F          |           F          |           **T**          |   **T**   | altura=10, largura=5, comprimento=0 | **Lança** `erro.produto.dimensoes.invalidas` |
+
+Testes implementados em CompraServiceMCDCTest
 
 ### Complexidade e independência de caminhos: 
 
