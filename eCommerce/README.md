@@ -1,3 +1,20 @@
+# Execução do projeto
+
+```shell
+git clone https://github.com/IagoGMacedo/DIM0507-Testes-Ecommerce.git
+cd eCommerce
+```
+
+Para executar os testes de caixa branca
+```shell
+.\mvwn verify
+```
+
+Para executar os testes de caixa preta
+```shell
+.\mvwn test
+```
+
 # Caixa Branca
 
 ### Cobertura MC/DC (Modified Condition/Decision Coverage):
@@ -24,5 +41,7 @@ V(G)=E−N+2P=95−70+2(1)=27
 
 Temos que são necessários no minímo 27 casos de teste para garantir cobertura de todas as arestas do método.
 
+# Caixa Preta
+Consultar [CasosDeTeste_CalcularCustoTotal.xlsx](documentos/caixaPreta/CasosDeTeste_CalcularCustoTotal.xlsx) para detalhes sobre partições, análise de bordas e tabelas de decisão
 
-
+PS: Para evitar um número exagerado de colunas, foram feitas duas tabelas de decisão separadas pela dependência de suas condições 

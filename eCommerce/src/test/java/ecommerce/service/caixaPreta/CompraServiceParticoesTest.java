@@ -1,7 +1,6 @@
 package ecommerce.service.caixaPreta;
 
 import ecommerce.entity.CarrinhoDeCompras;
-import ecommerce.entity.ItemCompra;
 import ecommerce.entity.Regiao;
 import ecommerce.entity.TipoCliente;
 import ecommerce.external.IEstoqueExternal;
@@ -10,6 +9,7 @@ import ecommerce.service.CarrinhoDeComprasService;
 import ecommerce.service.ClienteService;
 import ecommerce.service.CompraService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -22,19 +22,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CompraServiceParticoes {
-    private CarrinhoDeComprasService carrinhoSvc;
-    private ClienteService clienteSvc;
-    private IEstoqueExternal estoque;
-    private IPagamentoExternal pagamento;
+@DisplayName("CompraService - Partições de Equivalência")
+public class CompraServiceParticoesTest {
     private CompraService service;
 
     @BeforeEach
     void setUp() {
-        carrinhoSvc = Mockito.mock(CarrinhoDeComprasService.class);
-        clienteSvc = Mockito.mock(ClienteService.class);
-        estoque = Mockito.mock(IEstoqueExternal.class);
-        pagamento = Mockito.mock(IPagamentoExternal.class);
+        CarrinhoDeComprasService carrinhoSvc = Mockito.mock(CarrinhoDeComprasService.class);
+        ClienteService clienteSvc = Mockito.mock(ClienteService.class);
+        IEstoqueExternal estoque = Mockito.mock(IEstoqueExternal.class);
+        IPagamentoExternal pagamento = Mockito.mock(IPagamentoExternal.class);
         service = new CompraService(carrinhoSvc, clienteSvc, estoque, pagamento);
     }
     @Test
