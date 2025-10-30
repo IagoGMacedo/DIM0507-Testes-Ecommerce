@@ -1,5 +1,9 @@
 # Caixa Branca
 
+### Cobertura obrigatória de arestas (branch coverage): 
+![alt text](image.png)
+Testes implementados em CompraServiceCoberturaArestasTest
+
 ### Cobertura MC/DC (Modified Condition/Decision Coverage):
 
 |         Caso        | A (altura ≤ 0/nula) | L (largura ≤ 0/nula) | C (comprimento ≤ 0/nulo) | D = A∨L∨C | Entrada mínima (dimensões)          | Resultado esperado                                   |
@@ -8,6 +12,8 @@
 | **T2** (prova de A) |        **T**        |           F          |             F            |   **T**   | altura=0, largura=5, comprimento=5  | **Lança** `erro.produto.dimensoes.invalidas` |
 | **T3** (prova de L) |          F          |         **T**        |             F            |   **T**   | altura=10, largura=0, comprimento=5 | **Lança** `erro.produto.dimensoes.invalidas` |
 | **T4** (prova de C) |          F          |           F          |           **T**          |   **T**   | altura=10, largura=5, comprimento=0 | **Lança** `erro.produto.dimensoes.invalidas` |
+
+Testes implementados em CompraServiceMCDCTest
 
 ### Complexidade e independência de caminhos: 
 

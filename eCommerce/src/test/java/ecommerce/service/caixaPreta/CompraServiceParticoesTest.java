@@ -10,6 +10,7 @@ import ecommerce.service.CarrinhoDeComprasService;
 import ecommerce.service.ClienteService;
 import ecommerce.service.CompraService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -22,7 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class CompraServiceParticoes {
+@DisplayName("CompraService - Partições de Equivalência")
+public class CompraServiceParticoesTest {
     private CarrinhoDeComprasService carrinhoSvc;
     private ClienteService clienteSvc;
     private IEstoqueExternal estoque;
