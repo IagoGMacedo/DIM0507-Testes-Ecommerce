@@ -18,8 +18,6 @@ import ecommerce.entity.CarrinhoDeCompras;
 import ecommerce.entity.Cliente;
 import ecommerce.entity.ItemCompra;
 import ecommerce.entity.Produto;
-import ecommerce.entity.Regiao;
-import ecommerce.entity.TipoCliente;
 import ecommerce.entity.TipoProduto;
 import ecommerce.external.IEstoqueExternal;
 import ecommerce.external.IPagamentoExternal;
@@ -48,16 +46,6 @@ public class CompraService {
 
 	private static final BigDecimal TAXA_MINIMA = new BigDecimal("12.00");
 	private static final BigDecimal TAXA_FRAGIL_POR_UNIDADE = new BigDecimal("5.00");
-
-	private static final BigDecimal MULTIPLICADOR_SUDESTE = new BigDecimal("1.00");
-	private static final BigDecimal MULTIPLICADOR_SUL = new BigDecimal("1.05");
-	private static final BigDecimal MULTIPLICADOR_NORDESTE = new BigDecimal("1.10");
-	private static final BigDecimal MULTIPLICADOR_CENTRO_OESTE = new BigDecimal("1.20");
-	private static final BigDecimal MULTIPLICADOR_NORTE = new BigDecimal("1.30");
-
-	private static final BigDecimal DESCONTO_BRONZE = BigDecimal.ZERO;
-	private static final BigDecimal DESCONTO_PRATA = new BigDecimal("0.5");
-	private static final BigDecimal DESCONTO_OURO = BigDecimal.ONE;
 
 	private final CarrinhoDeComprasService carrinhoService;
 	private final ClienteService clienteService;
@@ -90,7 +78,7 @@ public class CompraService {
 			throw new IllegalStateException("Itens fora de estoque.");
 		}
 
-		BigDecimal custoTotal = calcularCustoTotal(carrinho, cliente.getRegiao(), cliente.getTipo());
+		BigDecimal custoTotal = calcularCustoTotal(carrinho);
 
 		PagamentoDTO pagamento = pagamentoExternal.autorizarPagamento(cliente.getId(), custoTotal.doubleValue());
 
@@ -108,12 +96,6 @@ public class CompraService {
 		CompraDTO compraDTO = new CompraDTO(true, pagamento.transacaoId(), "Compra finalizada com sucesso.");
 
 		return compraDTO;
-	}
-
-	private void validarTipoClienteParaCompra(TipoCliente tipoCliente) {
-		if (tipoCliente == null) {
-			throw new IllegalArgumentException(get("erro.tipoCliente.invalido"));
-		}
 	}
 
 	private void validarCarrinhoParaCompra(CarrinhoDeCompras carrinho) {
@@ -136,7 +118,6 @@ public class CompraService {
 		}
 
 		validarProduto(item.getProduto());
-
 	}
 
 	private void validarProduto(Produto produto) {
@@ -162,12 +143,11 @@ public class CompraService {
 		return value == null || value.compareTo(BigDecimal.ZERO) <= 0;
 	}
 
-	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho, Regiao regiao, TipoCliente tipoCliente) {
+	public BigDecimal calcularCustoTotal(CarrinhoDeCompras carrinho) {
 		validarCarrinhoParaCompra(carrinho);
-		validarTipoClienteParaCompra(tipoCliente);
 
 		var subtotal = calcularSubtotal(carrinho);
-		var frete = calcularFreteCompra(carrinho, regiao, tipoCliente);
+		var frete = calcularFrete(carrinho);
 
 		return subtotal.add(frete).setScale(2, RoundingMode.HALF_UP);
 	}
@@ -182,7 +162,7 @@ public class CompraService {
 						Collectors.toList()));
 
 		BigDecimal subtotal = itensPorTipo.values().stream()
-				.map(this::calcularSubtotalPorCategoriaProduto)
+				.map(this::calcularSubtotal)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		BigDecimal percentual = obterPercentualDescontoCarrinho(subtotal);
@@ -201,77 +181,22 @@ public class CompraService {
 		return BigDecimal.ZERO;
 	}
 
-	public BigDecimal calcularSubtotalPorCategoriaProduto(List<ItemCompra> itens) {
+	public BigDecimal calcularSubtotal(List<ItemCompra> itens) {
 		BigDecimal subtotal = itens.stream()
 				.map(i -> i.getProduto().getPreco()
 						.multiply(BigDecimal.valueOf(i.getQuantidade())))
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
-		long totalItens = itens.stream()
-				.count();
-
-		BigDecimal percentual = obterPercentualDescontoPorQuantidade(totalItens);
-		BigDecimal desconto = subtotal.multiply(percentual);
-
-		return subtotal.subtract(desconto);
+		return subtotal;
 	}
 
-	private BigDecimal obterPercentualDescontoPorQuantidade(long totalItens) {
-		if (totalItens >= 8)
-			return DESCONTO_15;
-		if (totalItens >= 5)
-			return DESCONTO_10;
-		if (totalItens >= 3)
-			return DESCONTO_05;
-		return BigDecimal.ZERO;
-	}
-
-	public BigDecimal calcularFreteCompra(CarrinhoDeCompras carrinho, Regiao regiao, TipoCliente tipoCliente) {
-
-		BigDecimal freteBase = calcularFreteBase(carrinho, regiao);
-
-		BigDecimal fatorDesconto = BigDecimal.ONE.subtract(obterPercentualDescontoFrete(tipoCliente));
-
-		return freteBase.multiply(fatorDesconto);
-	}
-
-	private BigDecimal obterPercentualDescontoFrete(TipoCliente tipoCliente) {
-		switch (tipoCliente) {
-			case BRONZE:
-				return DESCONTO_BRONZE;
-			case PRATA:
-				return DESCONTO_PRATA;
-			case OURO:
-				return DESCONTO_OURO;
-			default:
-				return BigDecimal.ZERO;
-		}
-	}
-
-	public BigDecimal calcularFreteBase(CarrinhoDeCompras carrinho, Regiao regiao) {
+	public BigDecimal calcularFrete(CarrinhoDeCompras carrinho) {
 		BigDecimal pesoTotal = calcularPesoTotalCompra(carrinho);
 		BigDecimal encargoPeso = calcularEncargoPeso(pesoTotal);
 		BigDecimal encargoFragilidade = calcularEncargoFragilidade(carrinho);
 
 		BigDecimal subtotal = encargoPeso.add(encargoFragilidade);
-		return subtotal.multiply(obterMultiplicadorRegiao(regiao));
-	}
-
-	private BigDecimal obterMultiplicadorRegiao(Regiao regiao) {
-		switch (regiao) {
-			case NORTE:
-				return MULTIPLICADOR_NORTE;
-			case NORDESTE:
-				return MULTIPLICADOR_NORDESTE;
-			case SUL:
-				return MULTIPLICADOR_SUL;
-			case SUDESTE:
-				return MULTIPLICADOR_SUDESTE;
-			case CENTRO_OESTE:
-				return MULTIPLICADOR_CENTRO_OESTE;
-			default:
-				return BigDecimal.ONE;
-		}
+		return subtotal;
 	}
 
 	private BigDecimal calcularEncargoPeso(BigDecimal peso) {
@@ -304,35 +229,13 @@ public class CompraService {
 
 	public BigDecimal calcularPesoTotalCompra(CarrinhoDeCompras carrinho) {
 		BigDecimal pesoTotal = carrinho.getItens().stream()
-				.map(this::calcularPesoTributavelItem)
+				.map(this::calcularPesoFisicoItem)
 				.reduce(BigDecimal.ZERO, BigDecimal::add);
 
 		return pesoTotal;
 	}
 
-	public BigDecimal calcularPesoTributavelItem(ItemCompra item) {
-		BigDecimal pesoFisico = calcularPesoFisicoItem(item);
-		BigDecimal pesoCubico = calcularPesoCubicoItem(item);
-
-		return pesoFisico.max(pesoCubico);
-	}
-
 	public BigDecimal calcularPesoFisicoItem(ItemCompra item) {
 		return item.getProduto().getPesoFisico().multiply(BigDecimal.valueOf(item.getQuantidade()));
-	}
-
-	public BigDecimal calcularPesoCubicoItem(ItemCompra item) {
-		BigDecimal comprimento = item.getProduto().getComprimento();
-		BigDecimal largura = item.getProduto().getLargura();
-		BigDecimal altura = item.getProduto().getAltura();
-
-		BigDecimal pesoCubicoUnit = comprimento.multiply(largura).multiply(altura)
-				.divide(FATOR_CUBICO, 10, RoundingMode.HALF_UP);
-
-		BigDecimal qtd = BigDecimal.valueOf(item.getQuantidade());
-
-		BigDecimal pesoCubicoTotal = pesoCubicoUnit.multiply(qtd);
-
-		return pesoCubicoTotal;
 	}
 }
