@@ -10,8 +10,6 @@ import org.mockito.Mockito;
 
 import ecommerce.entity.CarrinhoDeCompras;
 import ecommerce.entity.Produto;
-import ecommerce.entity.Regiao;
-import ecommerce.entity.TipoCliente;
 import ecommerce.external.IEstoqueExternal;
 import ecommerce.external.IPagamentoExternal;
 import ecommerce.service.CarrinhoDeComprasService;
@@ -19,7 +17,6 @@ import ecommerce.service.ClienteService;
 import ecommerce.service.CompraService;
 import static ecommerce.service.DomainTestData.carrinhoComItem;
 import static ecommerce.service.DomainTestData.carrinhoComItemProdutoNulo;
-import static ecommerce.service.DomainTestData.carrinhoComItemValido;
 import static ecommerce.service.DomainTestData.carrinhoVazio;
 import static ecommerce.service.DomainTestData.produtoBasico;
 import ecommerce.utils.Msg;
@@ -41,23 +38,10 @@ public class CompraServiceRobustezTest {
         }
 
         @Test
-        void calcularCustoTotal_quandoTipoClienteNulo_deveLancarIAE() {
-
-                CarrinhoDeCompras carrinho = carrinhoComItemValido(1, new BigDecimal("10.00"));
-
-                var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, null));
-
-                assertThat(ex)
-                                .as("Deve falhar quando tipo de cliente é nulo")
-                                .hasMessage(Msg.get("erro.tipoCliente.invalido"));
-        }
-
-        @Test
         void calcularCustoTotal_quandoCarrinhoInvalido_deveLancarIAE() {
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinhoVazio(), Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinhoVazio()));
 
                 assertThat(ex)
                                 .as("Carrinho vazio é inválido")
@@ -70,7 +54,7 @@ public class CompraServiceRobustezTest {
                 CarrinhoDeCompras carrinho = carrinhoComItem(produtoBasico(), 0L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Quantidade zero é inválida")
@@ -85,7 +69,7 @@ public class CompraServiceRobustezTest {
                 CarrinhoDeCompras carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Preço negativo é inválido")
@@ -97,7 +81,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItemProdutoNulo(1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Item sem produto deve ser invalidado")
@@ -111,7 +95,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Dimensões (altura/largura/comprimento) <= 0 devem ser invalidadas")
@@ -125,7 +109,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Peso físico <= 0 deve ser invalidado")
@@ -139,7 +123,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Preço <= 0 deve ser invalidado")
@@ -153,7 +137,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Tipo do produto nulo deve ser invalidado")
@@ -167,7 +151,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Nome blank deve ser invalidado")
@@ -181,7 +165,7 @@ public class CompraServiceRobustezTest {
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
-                                () -> service.calcularCustoTotal(carrinho, Regiao.SUDESTE, TipoCliente.BRONZE));
+                                () -> service.calcularCustoTotal(carrinho));
 
                 assertThat(ex)
                                 .as("Descrição vazia deve ser invalidada")
