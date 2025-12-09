@@ -1,25 +1,28 @@
 package ecommerce.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.*;
-
 import java.math.BigDecimal;
 
-import ecommerce.external.IEstoqueExternal;
-import ecommerce.external.IPagamentoExternal;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import static org.mockito.ArgumentMatchers.anyDouble;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import ecommerce.dto.DisponibilidadeDTO;
 import ecommerce.dto.EstoqueBaixaDTO;
 import ecommerce.dto.PagamentoDTO;
-import ecommerce.entity.Cliente;
 import ecommerce.entity.CarrinhoDeCompras;
+import ecommerce.entity.Cliente;
 import ecommerce.entity.ItemCompra;
 import ecommerce.entity.Produto;
+import ecommerce.external.IEstoqueExternal;
+import ecommerce.external.IPagamentoExternal;
 
 public class CompraServiceCalcularCustoTotalTest {
 

@@ -87,7 +87,6 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -131,7 +130,9 @@
                     </targetClasses>
                     <targetTests>
                         <param>ecommerce.service.CompraServiceCalcularCustoTotalTest</param>
-                        <param>ecommerce.service.CompraServiceFinalizarCompraTest</param>
+                        <param>ecommerce.service.CompraServiceFinalizarCompraCenario1Test</param>
+                        <param>ecommerce.service.CompraServiceFinalizarCompraCenario2Test</param>
+
                     </targetTests>
                 </configuration>
                 <dependencies>

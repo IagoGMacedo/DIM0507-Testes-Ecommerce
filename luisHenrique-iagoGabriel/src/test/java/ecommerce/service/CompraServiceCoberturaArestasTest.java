@@ -1,21 +1,23 @@
-package ecommerce.service.caixaBranca;
-
-import ecommerce.entity.*;
-import ecommerce.external.*;
-import ecommerce.service.*;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mockito;
+package ecommerce.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import static ecommerce.service.DomainTestData.*;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.Mockito;
+
+import ecommerce.external.IEstoqueExternal;
+import ecommerce.external.IPagamentoExternal;
+import static ecommerce.service.DomainTestData.carrinhoComItem;
+import static ecommerce.service.DomainTestData.produtoBasico;
 
 @DisplayName("CompraService - Cobertura de Arestas (Completa)")
-class CompraServiceCoberturaArestasTest {
+public class CompraServiceCoberturaArestasTest {
 
     private static final BigDecimal TAXA_MINIMA = new BigDecimal("12.00");
     private static final BigDecimal TAXA_FRAGIL = new BigDecimal("5.00");

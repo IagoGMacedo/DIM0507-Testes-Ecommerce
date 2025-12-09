@@ -1,4 +1,4 @@
-package ecommerce.service.caixaBranca;
+package ecommerce.service;
 
 import java.math.BigDecimal;
 
@@ -12,9 +12,6 @@ import ecommerce.entity.CarrinhoDeCompras;
 import ecommerce.entity.Produto;
 import ecommerce.external.IEstoqueExternal;
 import ecommerce.external.IPagamentoExternal;
-import ecommerce.service.CarrinhoDeComprasService;
-import ecommerce.service.ClienteService;
-import ecommerce.service.CompraService;
 import static ecommerce.service.DomainTestData.carrinhoComItem;
 import static ecommerce.service.DomainTestData.carrinhoComItemProdutoNulo;
 import static ecommerce.service.DomainTestData.carrinhoVazio;
