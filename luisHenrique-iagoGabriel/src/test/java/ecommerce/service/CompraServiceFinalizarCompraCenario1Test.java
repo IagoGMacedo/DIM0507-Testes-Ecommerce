@@ -27,15 +27,15 @@ import ecommerce.external.fake.PagamentoSimulado;
 @ExtendWith(MockitoExtension.class)
 public class CompraServiceFinalizarCompraCenario1Test {
     @Mock
-    private ClienteService clienteService; // MOCK
+    private ClienteService clienteService; 
 
     @Mock
-    private CarrinhoDeComprasService carrinhoService; // MOCK
+    private CarrinhoDeComprasService carrinhoService; 
 
-    private EstoqueSimulado estoqueFake; // FAKE externo
-    private PagamentoSimulado pagamentoFake; // FAKE externo
+    private EstoqueSimulado estoqueFake; 
+    private PagamentoSimulado pagamentoFake; 
 
-    private CompraService compraService; // SUT (ajuste o nome se for outro)
+    private CompraService compraService;
 
     @BeforeEach
     void setUp() {
@@ -111,7 +111,7 @@ public class CompraServiceFinalizarCompraCenario1Test {
         when(clienteService.buscarPorId(clienteId)).thenReturn(cliente);
         when(carrinhoService.buscarPorCarrinhoIdEClienteId(carrinhoId, cliente)).thenReturn(carrinho);
 
-        estoqueFake.configurarDisponibilidade(false); // Fora de estoque
+        estoqueFake.configurarDisponibilidade(false);
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
@@ -173,7 +173,7 @@ public class CompraServiceFinalizarCompraCenario1Test {
         estoqueFake.configurarDisponibilidade(true);
         pagamentoFake.configurarAutorizacao(true);
         pagamentoFake.configurarProximaTransacao(999L);
-        estoqueFake.configurarBaixaSucesso(false); // falha na baixa
+        estoqueFake.configurarBaixaSucesso(false);
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,

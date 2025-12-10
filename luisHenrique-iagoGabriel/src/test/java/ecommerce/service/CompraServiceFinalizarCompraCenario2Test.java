@@ -37,18 +37,18 @@ import ecommerce.external.fake.ClienteRepositoryFake;
 @ExtendWith(MockitoExtension.class)
 public class CompraServiceFinalizarCompraCenario2Test {
     @Mock
-    private IEstoqueExternal estoqueExternal; // MOCK externo
+    private IEstoqueExternal estoqueExternal;
 
     @Mock
-    private IPagamentoExternal pagamentoExternal; // MOCK externo
+    private IPagamentoExternal pagamentoExternal;
 
-    private ClienteRepositoryFake clienteRepositoryFake; // FAKE repo
-    private CarrinhoDeComprasRepositoryFake carrinhoRepositoryFake; // FAKE repo
+    private ClienteRepositoryFake clienteRepositoryFake;
+    private CarrinhoDeComprasRepositoryFake carrinhoRepositoryFake;
 
-    private ClienteService clienteService; // real
-    private CarrinhoDeComprasService carrinhoService; // real
+    private ClienteService clienteService;
+    private CarrinhoDeComprasService carrinhoService;
 
-    private CompraService compraService; // SUT
+    private CompraService compraService;
 
     @BeforeEach
     void setUp() {

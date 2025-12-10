@@ -88,7 +88,7 @@ public class CompraServiceRobustezTest {
         @Test
         void calcularCustoTotal_quandoDimensoesZeradas_deveLancarIAE_mensagemCorreta() {
                 var p = produtoBasico();
-                p.setAltura(BigDecimal.ZERO); // aciona dimensões inválidas (<= 0)
+                p.setAltura(BigDecimal.ZERO);
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
@@ -102,7 +102,7 @@ public class CompraServiceRobustezTest {
         @Test
         void calcularCustoTotal_quandoPesoFisicoNaoPositivo_deveLancarIAE_mensagemCorreta() {
                 var p = produtoBasico();
-                p.setPesoFisico(BigDecimal.ZERO); // <= 0
+                p.setPesoFisico(BigDecimal.ZERO);
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
@@ -144,7 +144,7 @@ public class CompraServiceRobustezTest {
         @Test
         void calcularCustoTotal_quandoNomeVazio_deveLancarIAE_mensagemCorreta() {
                 var p = produtoBasico();
-                p.setNome("   "); // blank
+                p.setNome("   ");
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
@@ -158,7 +158,7 @@ public class CompraServiceRobustezTest {
         @Test
         void calcularCustoTotal_quandoDescricaoVazia_deveLancarIAE_mensagemCorreta() {
                 var p = produtoBasico();
-                p.setDescricao(""); // empty
+                p.setDescricao("");
                 var carrinho = carrinhoComItem(p, 1L);
 
                 var ex = assertThrows(IllegalArgumentException.class,
