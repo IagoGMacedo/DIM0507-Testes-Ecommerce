@@ -13,13 +13,12 @@ cd eCommerce
 
 #### Cobertura Estrutural
 
-
 Execute o comando abaixo para gerar o relatório JaCoCo
 ```shell
 mvn verify
 ```
 
-<img width="1345" height="336" alt="image" src="https://github.com/user-attachments/assets/0a3ca2db-c0af-4864-a66b-507de16b1d2f" />
+![alt text](image-1.png)
 
 
 #### Mutação
@@ -43,3 +42,18 @@ Principais estratégias utilizadas para matar mutantes:
 - Cobertura de streams/lambdas com mocks e `ArgumentCaptor` para validar listas de IDs/quantidades
 - Verificação de efeitos colaterais: asserts sobre chamadas externas para matar mutantes que removem chamadas void
 - Testes combinados para cálculos para detectar mutações em operações aritméticas e arredondamento
+
+# Testes Obrigatórios para finalizarCompra()
+
+### Cobertura Estrutural
+
+Execute o comando abaixo para gerar o relatório JaCoCo
+```shell
+mvn verify
+```
+
+![alt text](image-2.png)
+
+### Cenários de teste
+
+Os dois cenários foram implementados em CompraServiceFinalizarCompraCenario1Test.java e CompraServiceFinalizarCompraCenario2Test.java
